@@ -1,3 +1,6 @@
+{puts} = require 'sys'
+
+
 exports.html = html = (data, indent=0) ->
   parseSelector = (selector) ->
     # split the selector into parts
@@ -9,18 +12,6 @@ exports.html = html = (data, indent=0) ->
     classes = (c.replace(/^\./, '') for c in rawClasses)
     id = rawId && rawId[0].replace(/^#/, '')
     [tag, classes, id]
-
-  toInlineString = (fn) ->
-    # a dirty hack to convert a js function to an inline js string
-    stringified = fn.toString()
-    if stringified.match(/^function \(\) {/)
-      stringified.replace(/^function \(\) {/, '')
-        .replace(/}$/, '')
-        .replace(/\s+/g, ' ')
-        .replace(/^\s+/, '')
-        .replace(/\s+$/, '')
-    else
-      stringified
 
   # we want the content to be indented whatever it is
   indentString = ""
@@ -57,7 +48,7 @@ exports.html = html = (data, indent=0) ->
         valString = if v.constructor is Array
           css.inline(v)
         else
-          toInlineString(v)
+          html.toInlineString(v)
         "#{k}=\"" + valString.replace(/"/, '\\"') + "\""
     attrString = attrStrings.join(" ")
     attrString = " " + attrString if attrString
@@ -69,6 +60,39 @@ exports.html = html = (data, indent=0) ->
       "#{indentString}<#{tag}#{attrString} />"
   else
     indentString + data.toString()
+
+html.toInlineString = (fn) ->
+  # a dirty hack to convert a js function to an inline js string
+  stringified = fn.toString()
+  if stringified.match(/^function \(\) {/)
+    stringified.replace(/^function \(\) {/, '')
+      .replace(/}$/, '')
+      .replace(/\s+/g, ' ')
+      .replace(/^\s+/, '')
+      .replace(/\s+$/, '')
+  else
+    stringified
+
+makeSafe = (data) ->
+  if data.constructor is String
+    data
+  else if data.constructor is Function
+    html.toInlineString(data)
+  else if data.constructor is Object
+    newObject = {}
+    for k,v of data
+      do (k,v) ->
+        newObject[k] = makeSafe(v) if data.hasOwnProperty(k)
+    newObject
+  else if data.constructor is Array
+    result = []
+    for i in data
+      do (i) ->
+        result.push(makeSafe(i))
+    result
+
+exports.jsonify = (data) ->
+  "(" + JSON.stringify(makeSafe(data)) + ")"
 
 exports.css = css = (data, prefix="") ->
   ruleSet = (selector, array) ->
@@ -114,9 +138,10 @@ css.inline = (data) ->
   strings.join(" ")
 
 
-require('sys').puts html(
-  ["div.foo", {id: "bar", onmouseover: -> doSomethingAwesome()},
-    ["p.foo.bar#baz", "Lorem ipsum dolor consectitur"],
-    ["br"],
-    ["p", {style: ["color", "red"]}, "I don't know about you, but I think this is pretty cool!"]
-  ])
+data = ["div.foo", {id: "bar", onmouseover: -> doSomethingAwesome()},
+  ["p.foo.bar#baz", "Lorem ipsum dolor consectitur"],
+  ["br"],
+  ["p", {style: ["color", "red"]}, "I don't know about you, but I think this is pretty cool!"]]
+
+puts exports.jsonify(data)
+

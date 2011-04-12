@@ -1,6 +1,6 @@
 # Description
 
-Hiccup is a small library for creating html and css using javascript/json data structures. It's almost a port of clojure's hiccup library, with a bit of gaka and scriptjure thrown in for good measure.
+Hiccup is a small library for creating html and css using coffeescript/json data structures. It's almost a port of clojure's hiccup library, with a bit of gaka and scriptjure thrown in for good measure.
 
 
 # Usage
@@ -49,7 +49,7 @@ produces this html...
       </p>
     </div>
 
-Finally, if an Array is assigned to an attr, it is passed to css.inline (see below) so you can also do this (although obviously you shouldn't!)
+Finally, if an Array is assigned to an attr, it is passed to css.inline (see below) so you can also do this.
 
     html(
       ["div.foo", {id: "bar", onmouseover: -> doSomethingAwesome()},
@@ -70,6 +70,15 @@ which produces...
       </p>
     </div>
 
+Naturally, if you pass this through JSON.stringify, the function will be deemed unsafe and will be removed so you can safely eval the result. To avoid this you can convert any hiccup data structure to the correct json using jsonify. When applied to the data structure from the previous example we get the following...
+
+    data = ["div.foo", {id: "bar", onmouseover: -> doSomethingAwesome()},
+      ["p.foo.bar#baz", "Lorem ipsum dolor consectitur"],
+      ["br"],
+      ["p", {style: ["color", "red"]}, "I don't know about you, but I think this is pretty cool!"]]
+
+    jsonify(data)
+    # => (['"div.foo"',{'"id"':'"bar"','"onmouseover"':'"return doSomethingAwesome();"'},['"p.foo.bar#baz"','"Lorem ipsum dolor consectitur"'],['"br"'],['"p"',{'"style"':['"color"','"red"']},'"I don\'t know about you, but I think this is pretty cool!"']])
 
 ## CSS
     
