@@ -136,4 +136,3 @@ css.inline = (data) ->
     do (atr, i) ->
       strings.push(css.rule(atr, data[i+1]))
   strings.join(" ")
-
