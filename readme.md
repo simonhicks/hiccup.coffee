@@ -78,7 +78,13 @@ Naturally, if you pass this through JSON.stringify, the function will be deemed 
       ["p", {style: ["color", "red"]}, "I don't know about you, but I think this is pretty cool!"]]
 
     jsonify(data)
-    # => (['"div.foo"',{'"id"':'"bar"','"onmouseover"':'"return doSomethingAwesome();"'},['"p.foo.bar#baz"','"Lorem ipsum dolor consectitur"'],['"br"'],['"p"',{'"style"':['"color"','"red"']},'"I don\'t know about you, but I think this is pretty cool!"']])
+
+    '''
+    (['"div.foo"',{'"id"':'"bar"','"onmouseover"':'"return doSomethingAwesome();"'},
+      ['"p.foo.bar#baz"','"Lorem ipsum dolor consectitur"'],
+      ['"br"'],
+      ['"p"',{'"style"':['"color"','"red"']},'"I don\'t know about you, but I think this is pretty cool!"']])
+    '''
 
 ## CSS
     

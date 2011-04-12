@@ -137,11 +137,3 @@ css.inline = (data) ->
       strings.push(css.rule(atr, data[i+1]))
   strings.join(" ")
 
-
-data = ["div.foo", {id: "bar", onmouseover: -> doSomethingAwesome()},
-  ["p.foo.bar#baz", "Lorem ipsum dolor consectitur"],
-  ["br"],
-  ["p", {style: ["color", "red"]}, "I don't know about you, but I think this is pretty cool!"]]
-
-puts exports.jsonify(data)
-
