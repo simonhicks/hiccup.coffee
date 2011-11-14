@@ -1,6 +1,3 @@
-{puts} = require 'sys'
-
-
 exports.html = html = (data, indent=0) ->
   parseSelector = (selector) ->
     # split the selector into parts
@@ -64,8 +61,8 @@ exports.html = html = (data, indent=0) ->
 html.toInlineString = (fn) ->
   # a dirty hack to convert a js function to an inline js string
   stringified = fn.toString()
-  if stringified.match(/^function \(\) {/)
-    stringified.replace(/^function \(\) {/, '')
+  if stringified.match(/^function\s*\(\)\s*{/)
+    stringified.replace(/^function\s*\(\)\s*{/, '')
       .replace(/}$/, '')
       .replace(/\s+/g, ' ')
       .replace(/^\s+/, '')
